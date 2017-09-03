@@ -4,21 +4,30 @@
 			<span class="link" v-show='navState==0'>
 				<router-link to="/">首页</router-link>
 			</span>
-			<span class="prevbtn" v-show='navState==1' @click='playNextOrPrev(-1)'>prev</span>
-			<span class="playbtn" v-bind:class='{"z-playing": isPlaying}' @click='playOrNot'>play</span>
-			<span class="prevbtn" v-show='navState==1' @click='playNextOrPrev(1)'>next</span>
+			<span class="prevbtn" v-show='navState==1' @click='playNextOrPrev(-1)'>
+				<i class="iconfont icon-prev"></i>
+			</span>
+			<span class="playbtn" v-bind:class='{"z-playing": isPlaying}' @click='playOrNot'>
+				<i class="iconfont icon-play"></i>
+				<i class="iconfont icon-pause"></i>
+			</span>
+			<span class="prevbtn" v-show='navState==1' @click='playNextOrPrev(1)'>
+				<i class="iconfont icon-next"></i>
+			</span>
 			<span class="link" v-show='navState==0'>我的</span>
 		</div>
 		<div class="player">
 			<audio :src="audioItem.url" @canplay="getPlayState" @timeupdate="audioTimeUpdate" @ended="playEnd" 
 				preload ></audio>
 		</div>
-		<div class="m-playlist" v-show='isPlaylistShow'>
-			<div class="close" @click='hidePlaylist'>关闭</div>
-			<ul>
-				<li v-for="item in playList" v-bind:class="{'cur':item.id==currentId}" @click='goPlay(item.id)'>{{item.name}}</li>
-			</ul>
-		</div>
+		<transition name="fade">
+			<div class="m-playlist" v-show='isPlaylistShow'>
+				<div class="close" @click='hidePlaylist'>关闭</div>
+				<ul>
+					<li v-for="item in playList" v-bind:class="{'cur':item.id==currentId}" @click='goPlay(item.id)'>{{item.name}}</li>
+				</ul>
+			</div>
+		</transition>
 	</footer>
 </template>
 <script>
@@ -67,7 +76,7 @@ export default{
 			//获取musicurl
 			this.$store.commit('setIsPlaying',false);
 			if(this.id == null){
-				return;
+				return
 			}
 			return api.getMusicUrl(this.id).then(response=>{
 				console.log(JSON.stringify(response))
@@ -177,11 +186,26 @@ export default{
 		line-height: 48px;
 		flex: 1 1 auto;
 		text-align: center;
+		.iconfont{
+			font-size: 24px;
+		}
 		&.playbtn{
-			color: black;
-			font-weight: 700;
+			.iconfont{
+				font-size: 32px;
+			}
+			.icon-play{
+				display: block;
+			}
+			.icon-pause{
+				display: none;
+			}
 			&.z-playing{
-				color: red;
+				.icon-play{
+					display: none;
+				}
+				.icon-pause{
+					display: block;
+				}
 			}
 		}
 	}
@@ -213,5 +237,11 @@ footer{
 			}
 		}
 	}
+}
+.fade-enter-active, .fade-leave-active {
+  transition:opacity .5s;
+}
+.fade-enter, .fade-leave-to{
+  opacity:0;
 }
 </style>

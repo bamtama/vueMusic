@@ -356,3 +356,12 @@ html, body {
 a {
   color: inherit;
 }
+
+@font-face {
+  font-family: 'iconfont';  /* project id 404043 */
+  src: url('//at.alicdn.com/t/font_404043_qp3zkvxj7wmkuik9.eot');
+  src: url('//at.alicdn.com/t/font_404043_qp3zkvxj7wmkuik9.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_404043_qp3zkvxj7wmkuik9.woff') format('woff'),
+  url('//at.alicdn.com/t/font_404043_qp3zkvxj7wmkuik9.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_404043_qp3zkvxj7wmkuik9.svg#iconfont') format('svg');
+}

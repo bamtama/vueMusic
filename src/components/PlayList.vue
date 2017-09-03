@@ -13,7 +13,8 @@
 	<ul class="list">
 		<li v-for="track in playList.tracks">
 			<router-link :to="{name:'Media',params:{id:track.id}}">{{track.name}}</router-link>
-		  	<mt-button size="small" @click.stop='updatePlaylist(track)'>play</mt-button>
+		  	<i class="iconfont icon-play" @click.stop='updatePlaylist(track)'>
+		  	</i>
 		</li>
 	</ul>
 </div>
@@ -81,6 +82,7 @@ export default{
 			text-align: left;
 			display: flex;
 			flex-direction: row;
+			align-items: center;
 			&>a{
 				display: inline-block;
 				line-height: 33px;
@@ -90,8 +92,10 @@ export default{
 				white-space: nowrap;
 				flex: auto;
 			}
-			&>.button{
+			&>.iconfont{
 				flex:none;
+				font-size: 18px;
+				color: darkgray;
 			}
 		}
 	}

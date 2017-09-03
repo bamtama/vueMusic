@@ -14,9 +14,13 @@
 		<span>{{ duration }}</span>
 	</div>
 	<div class="options">
-		<span class="btn-mode" @click="changePlayMode" v-bind:mode="playMode">模式</span>
-		<span class="btn-like">喜欢</span>
-		<span class="btn-list" @click="showPlaylist">歌单</span>
+		<span class="btn-mode" @click="changePlayMode" v-bind:mode="playMode">
+			<i class="iconfont icon-loop" v-show='playMode==0'></i>
+			<i class="iconfont icon-singleloop" v-show='playMode==1'></i>
+			<i class="iconfont icon-random" v-show='playMode==2'></i>
+		</span>
+		<span class="btn-like iconfont icon-like"></span>
+		<span class="btn-list iconfont icon-playlist" @click="showPlaylist"></span>
 	</div>
 </div>
 </template>
@@ -144,16 +148,16 @@ export default{
 		margin: 20px 0;
 		display: flex;
 		flex-direction: row;
-		justify-content: space-around;
+		justify-content: space-between;
+		.iconfont{
+			font-size: 24px;
+		}
 		.btn-mode{
 			&[mode="0"]{
-				color: red;
 			}
 			&[mode="1"]{
-				color: blue;
 			}
 			&[mode="2"]{
-				color: green;
 			}
 		}
 		.btn-like{
