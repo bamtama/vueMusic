@@ -69,6 +69,9 @@ const store = new Vuex.Store({
 				}
 			}
 		},
+		emptyPlayList:(state)=>{
+			state.playList.length = 0;
+		},
 		setLocalPlayList:(state, list)=>{
 			state.playList = list;
 		}
@@ -94,6 +97,17 @@ const store = new Vuex.Store({
 				//更新本地存储
 				window.localStorage.setItem('localList', JSON.stringify(state.playList));
 			}
+		},
+		clearPlaylist({commit, state}){
+			var item;
+			state.playList.forEach((ele, index)=>{
+				if(ele.id == state.currentId){
+					item = ele;
+				}
+			})
+			commit('emptyPlayList');
+			commit('setPlayList', item);
+			window.localStorage.setItem('localList', JSON.stringify(state.playList));
 		}
 	}
 })

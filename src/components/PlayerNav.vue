@@ -42,7 +42,8 @@ export default{
 	data(){
 		return {
 			id: null,
-			audioItem:{}
+			audioItem:{},
+			isArrawChanging:false
 		}
 	}, 
 	computed:{
@@ -137,40 +138,39 @@ export default{
 			}
 		},
 		playNextOrPrev(arrow){
-			if(this.$store.state.isNextOrPrev){
-				return;
+			if(!this.isArrawChanging){
+				this.isArrawChanging = true;
+				var list = this.$store.state.playList,
+					cid = this.$store.state.currentId,
+					nid, ni =-1;
+				list.forEach((ele, index)=>{
+					if(ele.id == cid){
+						if(arrow === -1){
+							if(index==0){
+								ni = (list.length-index-1)%list.length;
+							}
+							else{
+								ni = (--index)%list.length;
+							}
+						}
+						else if(arrow == 1){
+							ni = (++index)%list.length;
+						}
+						return ;
+					}
+				})
+				nid = list[ni].id;
+				//设定当前播放id
+				// this.$store.commit('setCurrentId', nid);
+				this.$store.dispatch('changeCurrentId',{id:nid});
 			}
-			this.$store.commit('setIsNextOrPrev', true);
-			var list = this.$store.state.playList,
-				cid = this.$store.state.currentId,
-				nid, ni =-1;
-			list.forEach((ele, index)=>{
-				if(ele.id == cid){
-					if(arrow === -1){
-						if(index==0){
-							ni = (list.length-index-1)%list.length;
-						}
-						else{
-							ni = (--index)%list.length;
-						}
-					}
-					else if(arrow == 1){
-						ni = (++index)%list.length;
-					}
-					return ;
-				}
-			})
-			nid = list[ni].id;
-			//设定当前播放id
-			// this.$store.commit('setCurrentId', nid);
-			this.$store.dispatch('changeCurrentId',{id:nid})
 		},
 		hidePlaylist(){
 			this.$store.commit('setPlaylistShow', false)
 		},
 		clearPlaylist(){
 			//清空列表
-			alert('to do sth')
+			this.$store.dispatch('clearPlaylist');
 		},
 		goPlay(id){
 			//this.$router.replace({name:'Media',params:{id: id}})
@@ -189,6 +189,7 @@ export default{
 		},
 		isPlaying(val, oldval){
 			if(val){
+				this.isArrawChanging = false;
 				console.log('why not play')
 				this.$audio.play()
 			}

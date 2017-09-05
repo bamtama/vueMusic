@@ -12,14 +12,28 @@ const SongDetail = '/v3/song/detail';							//歌曲详情
 const MusicUrl = '/song/enhance/player/url';			//mp3url
 
 
-/*//build 示例所用配置
-axios.defaults.baseURL = '/vueMusicDemo'
+//build 示例所用配置
+// axios.defaults.baseURL = '/vueMusicDemo'
 
-const PersonalizedPlaylist = '/static/datas/hot-list.json';	//热门推荐歌单
-const PlaylistDetail = '/static/datas/list-detail.json';					//歌单详情
-const SongDetail = '/static/datas/list-song.json';							//歌曲详情
-const MusicUrl = '/static/datas/url-list.json';			//mp3url
-*/
+// const PersonalizedPlaylist = '/static/datas/hot-list.json';	//热门推荐歌单
+// const PlaylistDetail = '/static/datas/list-detail.json';					//歌单详情
+// const SongDetail = '/static/datas/list-song.json';							//歌曲详情
+// const MusicUrl = '/static/datas/url-list.json';			//mp3url
+
+
+axios.interceptors.response.use((response)=>{
+	if(response.status == 200){
+		return response;
+	}
+	else{
+		alert(response.status);
+		return Promise.reject(response)
+	}
+},(error)=>{
+	alert('请求出错');
+	return Promise.reject(error);
+})
+
 
 export default{
 	getPersonalizedPlaylist(){
