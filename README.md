@@ -15,4 +15,8 @@ npm run dev
 # 2017-09-05
 样式方案采用纯CSS(vw for layout)解决，抛弃兼容低的浏览器，参考文档https://www.w3cplus.com/css/vw-for-layout.html
 
-更改产品设计，使其更符合播放器的交互操作
+修改了一些糙糙的样式
+
+修正了歌单前进后退时的bug
+
+//更改产品设计，使其更符合播放器的交互操作
