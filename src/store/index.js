@@ -13,6 +13,7 @@ const store = new Vuex.Store({
 		playList: [],
 		playMode: 0 ,		//0-顺序，1-单曲循环，2-随机，
 		playingTime: 0,		//当前播放时间点,
+		isNextOrPrev: false, 	//是否正在前后切
 		changeFlag:false,	//是否正在拖动播放条
 		duration: 0,		//曲长
 		currentId: null,	//当前播放歌曲id,
@@ -26,6 +27,7 @@ const store = new Vuex.Store({
 		playList : state => state.playList,
 		playMode : state => state.playMode,
 		playingTime : state => state.playingTime,
+		isNextOrPrev: state => state.isNextOrPrev,
 		changeFlag: state => state.changeFlag,
 		duration: state=>state.duration,
 		currentId : state => state.currentId,
@@ -39,6 +41,9 @@ const store = new Vuex.Store({
 		setPlayMode:(state, mode)=>{state.playMode = mode},
 		setPlayingTime:(state, time)=>{
 			state.playingTime = time;
+		},
+		setIsNextOrPrev:(state, flag)=>{
+			state.isNextOrPrev = flag;
 		},
 		setChangeFlag:(state, flag)=>{
 			state.changeFlag = flag;
@@ -72,6 +77,10 @@ const store = new Vuex.Store({
 		changePlayingTime ({ commit , state}, {time,flag}) {
 			commit('setPlayingTime', time);
 			commit('setChangeFlag', flag);
+		},
+		changeCurrentId({commit, state},{id}){
+			commit('setCurrentId', id),
+			commit('setIsNextOrPrev', false);
 		},
 		initLocalPlayList({commit, state}){
 			var list = window.localStorage.getItem('localList');

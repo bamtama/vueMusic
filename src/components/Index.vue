@@ -12,8 +12,8 @@
 			<h4>推荐歌单</h4>
 			<ul class="grid-ul">
 				<li v-for="m in medias" @click="goPlayList(m.id)">
-					<img v-bind:src="m.picUrl" />
-					<span>{{ m.name }}</span>
+					<img class="coverimg" v-bind:src="m.picUrl" />
+					<p class="title">{{ m.name }}</p>
 				</li>
 			</ul>
 		</div>
@@ -78,26 +78,35 @@ export default {
 		height: auto;
 	}
 	.index-swipe{
-		height: 170px;	/*?mt-swipe原样式不能自适应内部宽高*/
-	}
-	img{
-		width:100%;
+		height: 420px; /*?mt-swipe原样式不能自适应内部宽高*/
+		img{
+			height: 100%;
+		}
+		
 	}
 	.m-grid{
-		padding: 0 2vw;
+		padding: 0 10px;
 		&>h4{
-			font-size: 18px;
-			padding-left: 2vw;
+			font-size: 36px;
+			padding-left: 10px;
 			text-align: left;
 		}
 		&>.grid-ul{
 			display: flex;
 			flex-direction: row;
 			flex-wrap: wrap;
-			justify-content: center;
+			justify-content: space-around;
 			&>li{
-				width: 31vw;
-				padding: 1vw;
+				width: 30%;
+				margin-bottom: 20px;
+				&>.coverimg{
+					width: 100%;
+				}
+				&>.title{
+					width: 100%;
+					font-size: 14px;
+					text-align: left;
+				}
 			}
 		}
 	}

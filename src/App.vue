@@ -28,8 +28,8 @@ html,body{
 	}
 	footer{
 		flex: 0 0 auto;
-		height:48px;
-		background: rgba(0,0,0,0.6);
+		height: 88px;
+		background: rgba(0,0,0,0.9);
 		color: white;
 	}
 }

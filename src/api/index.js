@@ -2,14 +2,24 @@ import axios from 'axios'
 // Vue.prototype.$http = axios.create({
 // 	baseURL: '/muzapi'
 // })
-axios.defaults.baseURL = '/muzapi'
-
 //api为官方api，开发环境转发跨域，查询参考此项目https://github.com/Binaryify/NeteaseCloudMusicApi
 
+//开发配置
+axios.defaults.baseURL = '/muzapi'
 const PersonalizedPlaylist = '/personalized/playlist';	//热门推荐歌单
 const PlaylistDetail = '/v3/playlist/detail';					//歌单详情
 const SongDetail = '/v3/song/detail';							//歌曲详情
 const MusicUrl = '/song/enhance/player/url';			//mp3url
+
+
+/*//build 示例所用配置
+axios.defaults.baseURL = '/vueMusicDemo'
+
+const PersonalizedPlaylist = '/static/datas/hot-list.json';	//热门推荐歌单
+const PlaylistDetail = '/static/datas/list-detail.json';					//歌单详情
+const SongDetail = '/static/datas/list-song.json';							//歌曲详情
+const MusicUrl = '/static/datas/url-list.json';			//mp3url
+*/
 
 export default{
 	getPersonalizedPlaylist(){

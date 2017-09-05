@@ -1,8 +1,9 @@
 <template>
 <div class="m-media">
-	<img class="cover" v-bind:src="item.picUrl" />
+	<div class="cover-wrap">
+		<img class="cover" v-bind:src="item.picUrl" />
+	</div>
 	<h4>{{item.name}}</h4>
-	
 	<!-- 双向绑定以后无法更改值？？
 	<mt-range v-model="valueRange" :min="0" :max="end" class="slider">
 	  <div slot="start">{{ startTime }}</div>
@@ -19,7 +20,7 @@
 			<i class="iconfont icon-singleloop" v-show='playMode==1'></i>
 			<i class="iconfont icon-random" v-show='playMode==2'></i>
 		</span>
-		<span class="btn-like iconfont icon-like"></span>
+		<span class="btn-like iconfont icon-like" @click='addFav' v-bind:class='{"z-like":favFlag}'></span>
 		<span class="btn-list iconfont icon-playlist" @click="showPlaylist"></span>
 	</div>
 </div>
@@ -38,6 +39,7 @@ export default{
 			end: 0,
 			start: 0,
 			isRangeChanging: false,
+			favFlag : false
 			//startChangeStep: -1
 		}
 	},
@@ -75,6 +77,7 @@ export default{
 		},
 		getMusic(id){
 			api.getSongDetail(id).then(response=>{
+				//开发
 				if(response.data.code == 200){
 					this.item = {
 						'name': response.data.songs[0].name,
@@ -87,6 +90,25 @@ export default{
 					this.$store.commit('setCurrentId', id);
 					this.$store.dispatch('updatePlayList',{item: this.item})
 				}
+
+				//build 本地json
+				// if(response.data[id]){
+				// 	var song = response.data[id].songs[0];
+
+				// 	this.item = {
+				// 		'name': song.name,
+				// 		'id': song.id,
+				// 		'dt': song.dt/1000,
+				// 		'picUrl': song.al.picUrl
+				// 	}
+				// 	this.end = this.item.dt;
+				// 	//写入当前播放id
+				// 	this.$store.commit('setCurrentId', id);
+				// 	this.$store.dispatch('updatePlayList',{item: this.item})
+				// }
+				// else{
+				// 	alert('无源')
+				// }
 			})
 		},
 		onEvent(){
@@ -108,6 +130,9 @@ export default{
 		},
 		showPlaylist(){
 			this.$store.commit('setPlaylistShow', !this.isPlaylistShow)
+		},
+		addFav(){
+			this.favFlag = !this.favFlag;
 		}
 	},
 	watch:{
@@ -131,12 +156,26 @@ export default{
 
 <style lang='less' scoped>
 .m-media{
-	padding: 30px;
-	&>.cover{
-		width: 100%;
+	padding: 20px;
+	&>.cover-wrap{
+		margin: 20px 0;
+		position: relative;
+		width: 680px;
+		height: 680px;
+		overflow: hidden;
+		border-radius: 50%;
+		box-shadow: 0 0 30px rgba(0,0,0,0.2);
+		&>.cover{
+			position: absolute;
+			width: 100%;
+			left: 0;
+			top: -50%;
+			margin-top: 50%;
+		}
 	}
 	&>h4{
-		font-size: 18px;
+		font-size: 48px;
+		margin: 10px 0;
 	}
 	&>.slider{
 		margin: 0 0 10px 0;
@@ -148,9 +187,9 @@ export default{
 		margin: 20px 0;
 		display: flex;
 		flex-direction: row;
-		justify-content: space-between;
+		justify-content: space-around;
 		.iconfont{
-			font-size: 24px;
+			font-size: 48px;
 		}
 		.btn-mode{
 			&[mode="0"]{
@@ -174,6 +213,7 @@ export default{
 	display: flex;
 	flex-direction: row;
 	align-items: center;
+	padding: 20px 0;
 	&>.range{
 		flex: auto;
 		margin: 0 15px;
