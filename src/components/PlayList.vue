@@ -40,7 +40,7 @@ export default{
 		},
 		getPlayList(){
 			api.getPlaylistDetail(this.id).then(response=>{
-				//dev
+				//开发
 				if(response.data.code===200){
 					this.playList = response.data.playlist;
 				}

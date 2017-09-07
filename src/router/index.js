@@ -4,11 +4,10 @@ import Index from '@/components/Index'
 import Media from '@/components/Media'
 import Home from '@/components/Home'
 import PlayList from '@/components/PlayList'
-import Player from '@/components/Player'
 
 Vue.use(Router)
 
-var router = new Router({
+export default new Router({
   routes: [
     {
     	path:'/',
@@ -32,5 +31,3 @@ var router = new Router({
     }
   ]
 })
-
-export default router;

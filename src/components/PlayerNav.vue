@@ -126,7 +126,7 @@ export default{
 			}
 			return api.getMusicUrl(this.currentId).then(response=>{
 				//开发
-				// console.log(JSON.stringify(response))
+				console.log(JSON.stringify(response))
 				if(response.data.code == 200){
 					this.audioItem = response.data.data[0];
 				}
@@ -189,7 +189,7 @@ export default{
 				this.isArrawChanging = true;
 				var list = this.$store.state.playList,
 					cid = this.$store.state.currentId,
-					nid, ni =-1;
+					nid, ni =-1, nitem;
 				list.forEach((ele, index)=>{
 					if(ele.id == cid){
 						if(arrow === -1){
@@ -207,9 +207,10 @@ export default{
 					}
 				})
 				nid = list[ni].id;
+				nitem = list[ni];
 				//设定当前播放id
 				// this.$store.commit('setCurrentId', nid);
-				this.$store.dispatch('changeCurrentId',{id:nid});
+				this.$store.dispatch('changeCurrentId',{item:nitem});
 			}
 		},
 		hidePlaylist(){
