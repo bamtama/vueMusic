@@ -7,21 +7,23 @@ import api from '../api'
 const store = new Vuex.Store({
 	state:{
 		navShow: false ,
-		navState: 0,		//显示的情况下，0-个人主页，1-播放
+		navState: 1,			//显示的情况下，0-个人主页，1-播放
+		navLeftShow: true,		//显示nav左列表
 		isPlaying: false,
 		isPlaylistShow: false,
 		playList: [],
-		playMode: 0 ,		//0-顺序，1-单曲循环，2-随机，
-		playingTime: 0,		//当前播放时间点,
-		isNextOrPrev: false, 	//是否正在前后切
-		changeFlag:false,	//是否正在拖动播放条
-		duration: 0,		//曲长
-		currentId: null,	//当前播放歌曲id,
-		currentMedia: {},	//当前播放歌曲对象
+		playMode: 0 ,			//0-顺序，1-单曲循环，2-随机，
+		playingTime: 0,			//当前播放时间点,
+		isNextOrPrev: false,	//是否正在前后切
+		changeFlag:false,		//是否正在拖动播放条
+		duration: 0,			//曲长
+		currentId: null,		//当前播放歌曲id,
+		currentSong: {}			//当前播放歌曲对象
 	},
 	getters:{
 		navShow : state=>state.navShow,
 		navState : state => state.navState,
+		navLeftShow: state=> state.navLeftShow,
 		isPlaylistShow: state=> state.isPlaylistShow,
 		isPlaying : state => state.isPlaying,
 		playList : state => state.playList,
@@ -31,12 +33,14 @@ const store = new Vuex.Store({
 		changeFlag: state => state.changeFlag,
 		duration: state=>state.duration,
 		currentId : state => state.currentId,
-		currentMedia : state => state.currentMedia
+		currentSong : state => state.currentSong
 	},
 	mutations:{
 		setNavShow:(state,flag)=>{state.navShow = flag},
 		setNavState:(state, ns)=>{state.navState = ns},
+		setnavLeftShow:(state, flag=true)=> {state.navLeftShow = flag},
 		setPlaylistShow:(state, flag)=> {state.isPlaylistShow = flag},
+		togglePlaylistShow:(state) =>{ state.isPlaylistShow = !state.isPlaylistShow},
 		setIsPlaying:(state, flag)=>{state.isPlaying = flag},
 		setPlayMode:(state, mode)=>{state.playMode = mode},
 		setPlayingTime:(state, time)=>{
@@ -51,7 +55,7 @@ const store = new Vuex.Store({
 		setCurrentId:(state, id)=>{
 			state.currentId = id
 		},
-		setCurrentMedia:(state, item)=>{state.currentMedia = item},
+		setCurrentSong:(state, item)=>{state.currentSong = item},
 		setPlayList:(state, item)=>{
 			if(state.playList.length == 0){
 				state.playList.push(item);
@@ -70,7 +74,7 @@ const store = new Vuex.Store({
 			}
 		},
 		emptyPlayList:(state)=>{
-			state.playList.length = 0;
+			state.playList = [];
 		},
 		setLocalPlayList:(state, list)=>{
 			state.playList = list;
@@ -86,9 +90,30 @@ const store = new Vuex.Store({
 			commit('setIsNextOrPrev', false);
 		},
 		initLocalPlayList({commit, state}){
-			var list = window.localStorage.getItem('localList');
-			list = !list?[]:list;
-			commit('setLocalPlayList', JSON.parse(list));
+			var list = window.localStorage.getItem('localList'), jsonlist ;
+			if(list != '[null]' && list != null){
+				list = list;
+			}
+			else{
+				list = '[]';
+			}
+			jsonlist = JSON.parse(list);
+			commit('setLocalPlayList', jsonlist);
+			if(jsonlist.length>0){
+				commit('setNavShow', true);
+			}
+			else{
+				commit('setNavShow',false);
+			}
+			//设置当前播放歌曲
+			if(!state.isPlaying){
+				if(state.currentId == null){
+					if(state.playList.length > 0){
+						commit('setCurrentSong', state.playList[0])
+						commit('setCurrentId', state.currentSong.id)
+					}
+				}
+			}
 		},
 		updatePlayList({commit, state}, {item , opt = 'add'}){
 			//暂时只考虑添加
@@ -100,14 +125,20 @@ const store = new Vuex.Store({
 		},
 		clearPlaylist({commit, state}){
 			var item;
-			state.playList.forEach((ele, index)=>{
-				if(ele.id == state.currentId){
-					item = ele;
-				}
-			})
-			commit('emptyPlayList');
-			commit('setPlayList', item);
-			window.localStorage.setItem('localList', JSON.stringify(state.playList));
+			if(state.currentId != null){
+				state.playList.forEach((ele, index)=>{
+					if(ele.id == state.currentId){
+						item = ele;
+					}
+				})
+				commit('emptyPlayList');
+				commit('setPlayList', item);
+				window.localStorage.setItem('localList', JSON.stringify(state.playList));
+			}
+			else{
+				commit('emptyPlayList');
+				window.localStorage.setItem('localList', JSON.stringify([]));
+			}
 		}
 	}
 })

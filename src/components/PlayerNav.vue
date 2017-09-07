@@ -1,20 +1,30 @@
 <template>
 	<footer v-show='navShow'>
 		<div class="nav">
-			<span class="link" v-show='navState==0'>
+			<div class="item leftnav" v-show='navLeftShow'>
+				<i class="iconfont icon-playlist" @click='togglePlaylist()'></i>
+				<span>{{currentSong.name}}</span>
+				<!-- <template v-if='playList.length > 0'>
+					<span>{{ playList[0].name }}</span>
+				</template>
+				<template v-else>
+					<span></span>
+				</template> -->
+			</div>
+			<span class="link item" v-show='navState==0'>
 				<router-link to="/">首页</router-link>
 			</span>
-			<span class="prevbtn" v-show='navState==1' @click='playNextOrPrev(-1)'>
+			<span class="prevbtn item" v-show='navState==1' @click='playNextOrPrev(-1)'>
 				<i class="iconfont icon-prev"></i>
 			</span>
-			<span class="playbtn" v-bind:class='{"z-playing": isPlaying}' @click='playOrNot'>
+			<span class="playbtn item" v-bind:class='{"z-playing": isPlaying}' @click='playOrNot'>
 				<i class="iconfont icon-play"></i>
 				<i class="iconfont icon-pause"></i>
 			</span>
-			<span class="prevbtn" v-show='navState==1' @click='playNextOrPrev(1)'>
+			<span class="prevbtn item" v-show='navState==1' @click='playNextOrPrev(1)'>
 				<i class="iconfont icon-next"></i>
 			</span>
-			<span class="link" v-show='navState==0'>我的</span>
+			<span class="link item" v-show='navState==0'>我的</span>
 		</div>
 		<div class="player">
 			<audio :src="audioItem.url" @canplay="getPlayState" @timeupdate="audioTimeUpdate" @ended="playEnd" 
@@ -27,7 +37,7 @@
 					<span @click='hidePlaylist'>关闭</span>
 				</div>
 				<ul>
-					<li v-for="item in playList" v-bind:class="{'cur':item.id==currentId}" @click='goPlay(item.id)'>{{item.name}}</li>
+					<li v-for="item in playList" v-bind:class="{'cur':item.id==currentId}" @click='goPlay(item)'>{{item.name}}</li>
 				</ul>
 			</div>
 		</transition>
@@ -56,16 +66,47 @@ export default{
 			'isPlaying',
 			'playList',
 			'isPlaylistShow',
-			'playMode'
-		])
+			'playMode',
+			'currentSong',
+			'navLeftShow'
+		]),
+		getCurrentName:{
+			get(){
+				let name = '';
+				if(this.playList.length > 0){
+					if(this.currentId != null){
+						this.playList.forEach((ele,index)=>{
+							if(ele.id == this.currentId){
+								name = ele.name;
+								return;
+							}
+						})
+					}
+					else{
+						name = this.playList[0].name;
+					}
+				}
+				return name;
+			},
+			set(){
+
+			}
+		}
 	},
 	methods:{
 		playOrNot(){
-			if(!this.$audio.paused){
-				this.$store.commit('setIsPlaying', false);
+			if(this.currentId == null){
+				if(this.playList.length > 0){
+
+				}
 			}
 			else{
-				this.$store.commit('setIsPlaying', true);
+				if(!this.$audio.paused){
+					this.$store.commit('setIsPlaying', false);
+				} 
+				else{
+					this.$store.commit('setIsPlaying', true);
+				}
 			}
 		},
 		getDuration(){
@@ -80,12 +121,12 @@ export default{
 		getMusicSource(){
 			//获取musicurl
 			this.$store.commit('setIsPlaying',false);
-			if(this.id == null){
+			if(this.currentId == null){
 				return
 			}
-			return api.getMusicUrl(this.id).then(response=>{
+			return api.getMusicUrl(this.currentId).then(response=>{
 				//开发
-				console.log(JSON.stringify(response))
+				// console.log(JSON.stringify(response))
 				if(response.data.code == 200){
 					this.audioItem = response.data.data[0];
 				}
@@ -138,6 +179,12 @@ export default{
 			}
 		},
 		playNextOrPrev(arrow){
+			if(this.currentId == null){
+				return false;
+			}
+			if(this.playList.length <= 1){
+				return false;
+			}
 			if(!this.isArrawChanging){
 				this.isArrawChanging = true;
 				var list = this.$store.state.playList,
@@ -168,13 +215,17 @@ export default{
 		hidePlaylist(){
 			this.$store.commit('setPlaylistShow', false)
 		},
+		togglePlaylist(){
+			this.$store.commit('togglePlaylistShow')
+		},
 		clearPlaylist(){
 			//清空列表
 			this.$store.dispatch('clearPlaylist');
 		},
-		goPlay(id){
+		goPlay(item){
 			//this.$router.replace({name:'Media',params:{id: id}})
-			this.$store.commit('setCurrentId', id)
+			this.$store.commit('setCurrentId', item.id)
+			this.$store.commit('setCurrentSong', item)
 		}
 	},
 	watch:{
@@ -196,6 +247,9 @@ export default{
 			else{
 				this.$audio.pause();
 			}
+		},
+		playList(val,oldval){
+			this.$store.commit('setNavShow', 1);
 		}
 	},
 	mounted(){
@@ -212,9 +266,26 @@ export default{
 	justify-content: space-around;
 	padding: 10px 0 0 0;
 	align-items: center;
-	&>span{
+	&>.item{
 		flex: 1 1 auto;
 		text-align: center;
+		&.leftnav{
+			width: 480px;
+			text-align: left;
+			padding: 0 0 0 20px;
+			.iconfont, span{
+				font-size: 28px;
+				vertical-align: middle;
+			}
+			span{
+				display: inline-block;
+				width: 400px;
+				padding: 0 0 0 10px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+		}
 		.iconfont{
 			font-size: 48px;
 		}
@@ -272,9 +343,12 @@ footer{
 		overflow: auto;
 		&>li{
 			font-size: 32px;
-			height: 64px;
-			line-height: 64px;
+			height: 72px;
+			line-height: 72px;
 			padding: 0 40px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 			&.cur{
 				background: rgba(255,255,255,0.1);
 			}

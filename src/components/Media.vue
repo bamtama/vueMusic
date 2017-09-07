@@ -72,8 +72,9 @@ export default{
 	},
 	methods:{
 		initNav(){
-			this.$store.commit('setNavShow', true)
-			this.$store.commit('setNavState', 1)
+			// this.$store.commit('setNavShow', true)
+			// this.$store.commit('setNavState', 1)
+			this.$store.commit('setnavLeftShow', false)
 		},
 		getMusic(id){
 			api.getSongDetail(id).then(response=>{
@@ -88,6 +89,7 @@ export default{
 					this.end = this.item.dt;
 					//写入当前播放id
 					this.$store.commit('setCurrentId', id);
+					this.$store.commit('setCurrentSong', this.item);
 					this.$store.dispatch('updatePlayList',{item: this.item})
 				}
 
@@ -143,7 +145,6 @@ export default{
 			}
 		},
 		$route(to,from){
-			console.log(to)
 		}
 	},
 	mounted(){

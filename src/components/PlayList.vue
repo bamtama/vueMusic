@@ -35,6 +35,9 @@ export default{
 		}
 	},
 	methods:{
+		initNav(){
+			this.$store.commit('setnavLeftShow', true)
+		},
 		getPlayList(){
 			api.getPlaylistDetail(this.id).then(response=>{
 				//dev
@@ -48,6 +51,7 @@ export default{
 		},
 		updatePlaylist(item){
 			this.$store.commit('setCurrentId',  item.id);
+			this.$store.commit('setCurrentSong', item)
 			this.$store.dispatch('updatePlayList',{item: {
 				'name': item.name,
 				'id': item.id,
@@ -55,14 +59,15 @@ export default{
 				'picUrl': item.al.picUrl
 			}})
 			//显示播放条
-			this.$store.commit('setNavShow', true)
-			this.$store.commit('setNavState', 1)
+			//this.$store.commit('setNavShow', true)
+			//this.$store.commit('setNavState', 1)
 		}
 	},
 	computed:{
 	},
 	mounted(){
 		this.getPlayList()
+		this.initNav()
 	}
 }
 </script>

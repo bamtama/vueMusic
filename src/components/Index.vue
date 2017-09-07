@@ -45,7 +45,7 @@ export default {
   		this.$router.push({'path':`/PlayList?id=${id}`})
   	},
   	initNav(){
-  		this.$store.commit('setNavShow', false)
+  		this.$store.commit('setnavLeftShow', true)
   	},
   	getMusics(){
   		// this.$http.get('/personalized/playlist').then(response=>{
@@ -64,11 +64,9 @@ export default {
   		})
   	}
   },
-  create(){
-  	this.initNav();
-  },
   mounted(){
   	this.getMusics();
+  	this.initNav();
   }
 }
 </script>
@@ -104,7 +102,7 @@ export default {
 				}
 				&>.title{
 					width: 100%;
-					font-size: 14px;
+					font-size: 28px;
 					text-align: left;
 				}
 			}
