@@ -22,3 +22,5 @@ npm run dev
 
 # 2017-09-07
 更改产品设计，使其更符合播放器的交互操作
+
+![img](https://s1.imgchr.com/2017/09/07/mWNZj.gif)
