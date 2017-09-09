@@ -125,21 +125,24 @@ const store = new Vuex.Store({
 			}
 		},
 		clearPlaylist({commit, state}){
-			var item;
-			if(state.currentId != null){
-				state.playList.forEach((ele, index)=>{
-					if(ele.id == state.currentId){
-						item = ele;
-					}
-				})
-				commit('emptyPlayList');
-				commit('setPlayList', item);
-				window.localStorage.setItem('localList', JSON.stringify(state.playList));
-			}
-			else{
-				commit('emptyPlayList');
-				window.localStorage.setItem('localList', JSON.stringify([]));
-			}
+			commit('emptyPlayList');
+			window.localStorage.setItem('localList', JSON.stringify([]));
+			
+			// var item;
+			// if(state.currentId != null){
+			// 	state.playList.forEach((ele, index)=>{
+			// 		if(ele.id == state.currentId){
+			// 			item = ele;
+			// 		}
+			// 	})
+			// 	commit('emptyPlayList');
+			// 	commit('setPlayList', item);
+			// 	window.localStorage.setItem('localList', JSON.stringify(state.playList));
+			// }
+			// else{
+			// 	commit('emptyPlayList');
+			// 	window.localStorage.setItem('localList', JSON.stringify([]));
+			// }
 		}
 	}
 })

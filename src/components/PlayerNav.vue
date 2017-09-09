@@ -36,9 +36,12 @@
 					<span @click='clearPlaylist'>清空列表</span>
 					<span @click='hidePlaylist'>关闭</span>
 				</div>
-				<ul>
+				<ul v-if='playList.length > 0'>
 					<li v-for="item in playList" v-bind:class="{'cur':item.id==currentId}" @click='goPlay(item)'>{{item.name}}</li>
 				</ul>
+				<div v-if='playList.length <=0' class='tip-empty'>
+					~暂未添加歌曲~
+				</div>
 			</div>
 		</transition>
 		<div class="mask" v-show='isPlaylistShow' @click='hidePlaylist'></div>
@@ -116,7 +119,10 @@ export default{
 			// this.$store.commit('setPlayingTime',{start:start, end:end})
 		},
 		getPlayState(){
-			this.$store.commit('setIsPlaying', true)
+			if(!this.$store.state.navLeftShow){
+				this.$store.commit('setIsPlaying', true)
+			}
+			//
 		},
 		getMusicSource(){
 			//获取musicurl
@@ -211,6 +217,9 @@ export default{
 				//设定当前播放id
 				// this.$store.commit('setCurrentId', nid);
 				this.$store.dispatch('changeCurrentId',{item:nitem});
+				if(!this.isPlaying){
+					this.isArrawChanging = false;
+				}
 			}
 		},
 		hidePlaylist(){
@@ -354,6 +363,11 @@ footer{
 				background: rgba(255,255,255,0.1);
 			}
 		}
+	}
+	&>.tip-empty{
+		height: 72px;
+		line-height: 72px;
+		text-align: center;
 	}
 }
 .fade-enter-active, .fade-leave-active {
