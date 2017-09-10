@@ -23,4 +23,7 @@ npm run dev
 # 2017-09-07
 更改产品设计，使其更符合播放器的交互操作
 
-![img](https://s1.imgchr.com/2017/09/07/mWNZj.gif)
+# 2017-09-10
+更改产品设计，替换range input为自定义播放条组件。
+
+![img](https://s1.imgchr.com/2017/09/10/nC0bQ.gif)
