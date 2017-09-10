@@ -21,7 +21,6 @@ import PlayerNav from './components/PlayerNav'
 Vue.component('player-nav', PlayerNav)
 
 Vue.config.productionTip = false
-
 import store from './store/index'
 
 /* eslint-disable no-new */

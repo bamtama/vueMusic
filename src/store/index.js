@@ -86,6 +86,7 @@ const store = new Vuex.Store({
 			commit('setChangeFlag', flag);
 		},
 		changeCurrentId({commit, state},{item}){
+			commit('setPlayingTime', 0);
 			commit('setCurrentId', item.id);
 			commit('setCurrentSong', item);
 			commit('setIsNextOrPrev', false);

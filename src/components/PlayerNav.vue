@@ -119,10 +119,12 @@ export default{
 			// this.$store.commit('setPlayingTime',{start:start, end:end})
 		},
 		getPlayState(){
-			if(!this.$store.state.navLeftShow){
-				this.$store.commit('setIsPlaying', true)
-			}
-			//
+			this.$store.commit('setIsPlaying', false);
+			setTimeout(()=>{this.$store.commit('setIsPlaying', true)},0)
+			// this.$store.commit('setIsPlaying', false);
+			// if(!this.$store.state.navLeftShow){
+			// 	setTimeout(()=>{this.$store.commit('setIsPlaying', true)},0)
+			// }
 		},
 		getMusicSource(){
 			//获取musicurl
@@ -158,10 +160,15 @@ export default{
 			}
 		},
 		playEnd(){
-			this.playWithList();
+			if(this.playList.length > 1){
+				this.playWithList();
+			}
+			else{
+				this.replay();
+			}
 		},
 		playWithList(){
-			var mode = this.$store.state.playMode,
+			let mode = this.$store.state.playMode,
 				list = this.$store.state.playList,
 				cid = this.$store.state.currentId;
 			switch(mode){
@@ -171,15 +178,12 @@ export default{
 					break;
 				case 1:
 					//单曲循环
-					this.$audio.currentTime = 0;
-					this.audioTimeUpdate();
-					this.$audio.play();	
-					//this.$store.commit('setIsPlaying', true);	//未触发watch事件？
+					this.replay();
 					break;
 				case 2:
 					//随机
 					//简单随机
-					var index = Math.floor(list.length*Math.random());
+					let index = Math.floor(list.length*Math.random());
 					this.$store.commit('setCurrentId', list[index].id);
 					break;
 			}
@@ -193,7 +197,7 @@ export default{
 			}
 			if(!this.isArrawChanging){
 				this.isArrawChanging = true;
-				var list = this.$store.state.playList,
+				let list = this.$store.state.playList,
 					cid = this.$store.state.currentId,
 					nid, ni =-1, nitem;
 				list.forEach((ele, index)=>{
@@ -221,6 +225,12 @@ export default{
 					this.isArrawChanging = false;
 				}
 			}
+		},
+		replay(){
+			this.$store.commit('setIsPlaying', false)
+			this.$audio.currentTime = 0;
+			this.audioTimeUpdate();
+			setTimeout(()=>{this.$store.commit('setIsPlaying', true)},0)
 		},
 		hidePlaylist(){
 			this.$store.commit('setPlaylistShow', false)

@@ -17,8 +17,7 @@
 		<ul class="list">
 			<li v-for="track in playList.tracks">
 				<router-link :to="{name:'Media',params:{id:track.id}}">{{track.name}}</router-link>
-			  	<i class="iconfont icon-play" @click.stop='updatePlaylist(track)'>
-			  	</i>
+			  	<i class="iconfont icon-play" v-bind:class="{'z-cur': track.id == currentId}" @click.stop='updatePlaylist(track)'></i>
 			</li>
 		</ul>
 	</div>
@@ -26,6 +25,7 @@
 </template>
 <script>
 import api from '../api'
+import { mapGetters } from 'vuex'
 export default{
 	name:'playlist',
 	data(){
@@ -64,6 +64,9 @@ export default{
 		}
 	},
 	computed:{
+		...mapGetters([
+			'currentId'
+		])
 	},
 	mounted(){
 		this.getPlayList()
@@ -119,6 +122,9 @@ export default{
 				flex:none;
 				font-size: 36px;
 				color: darkgray;
+				&.z-cur{
+					color:red;
+				}
 			}
 		}
 	}

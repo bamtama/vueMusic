@@ -9,11 +9,15 @@
 	  <div slot="start">{{ startTime }}</div>
 	  <div slot="end">{{ duration }}</div>
 	</mt-range> -->
-	<div class="m-range">
+	<!-- <div class="m-range">
 		<span>{{ startTime }}</span>
 		<input type="range" :min="0" :max="end" :value="valueRange" class="range" v-on:input="isChanging" @change="changeValue">
 		<span>{{ duration }}</span>
-	</div>
+	</div> -->
+	<my-progress-bar :min='0' :max='end' v-model='valueRange' v-on:changeValue='changeValue'>
+		<span slot='tStart'>{{ startTime }}</span>
+		<span slot='tEnd'>{{ duration }}</span>
+	</my-progress-bar>
 	<div class="options">
 		<span class="btn-mode" @click="changePlayMode" v-bind:mode="playMode">
 			<i class="iconfont icon-loop" v-show='playMode==0'></i>
@@ -27,18 +31,21 @@
 </template>
 
 <script>
+import PlayProgressBar from './cProgressBar/PlayProgressBar.vue'
 import { mapGetters } from 'vuex'
 import api from '../api'
 import util from '../util'
 export default{
 	name:'Media',
+	components:{
+		'my-progress-bar':PlayProgressBar
+	},
 	data(){
 		return{
 			id: this.$route.params.id,
 			item : {},
 			end: 0,
 			start: 0,
-			isRangeChanging: false,
 			favFlag : false
 			//startChangeStep: -1
 		}
@@ -56,12 +63,7 @@ export default{
 			return util.FormatTime(this.$store.state.playingTime)
 		},
 		valueRange() {
-			if(this.isRangeChanging){
-				return this.$el.querySelector('.range').value;
-			}
-			else{
-		    	return this.$store.state.playingTime;
-			}
+			return this.$store.state.playingTime;
 		},
 		...mapGetters([
 			'playingTime',
@@ -116,17 +118,12 @@ export default{
 		onEvent(){
 			
 		},
-		isChanging(){
-			//this.startChangeStep = this.$el.querySelector('.range').value;
-			this.isRangeChanging = true;
-		},
-		changeValue(){
-			this.isRangeChanging = false;
-			var val = this.$el.querySelector('.range').value;
-			this.$store.dispatch('changePlayingTime',{time:val, flag:true})
+		changeValue(newval){
+			//var val = this.$el.querySelector('.range').value;
+			this.$store.dispatch('changePlayingTime',{time:newval, flag:true})
 		},
 		changePlayMode(){
-			var m = this.playMode,
+			let m = this.playMode,
 				nmode = (++m)%3;
 			this.$store.commit('setPlayMode', nmode);
 		},
@@ -177,6 +174,9 @@ export default{
 	&>h4{
 		font-size: 48px;
 		margin: 10px 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 	&>.slider{
 		margin: 0 0 10px 0;
